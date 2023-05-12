@@ -28,14 +28,16 @@ const share = async () => {
         
         console.log(nodeUrlList);
         
-        // fetch local linktrees
-        let allLinktrees = await db.getAllLinktrees();
-        allLinktrees = allLinktrees || '[]';
+        // fetch local contacts
+        let allContacts = await db.getAllContacts();
+        allContacts = allContacts || '[]';
 
-        // for each node, get all linktrees
+        // for each node, get all contacts
         for (let url of nodeUrlList) {
           console.log(url);
-          const res = await axios.get(`${url}/task/${TASK_ID}/linktree/all`);
+          // TODO - check if this was also using the wrong endpoint in other tasks
+          // Here we fetch the proofs associated with the round in question
+          const res = await axios.get(`${url}/task/${TASK_ID}/proofs/:round`);
           if (res.status != 200) {
             console.error('ERROR', res.status);
             continue;
@@ -54,15 +56,15 @@ const share = async () => {
               console.warn(`${url} is not able to verify the signature`);
               continue;
             }
-            let localExistingLinktree = allLinktrees.find((e) => {
+            let localExistingContact = allContacts.find((e) => {
               e.uuid == value.data.uuid;
             });
-            if (localExistingLinktree) {
-              if (localExistingLinktree.data.timestamp < value.data.timestamp) {
-                await db.setLinktree(value.publicKey, value.data)
+            if (localExistingContact) {
+              if (localExistingContact.data.timestamp < value.data.timestamp) {
+                await db.setContact(value.publicKey, value.data)
               }
             } else {
-              await db.setLinktree(value.publicKey, value.data)
+              await db.setContact(value.publicKey, value.data)
             }
           }
         }

@@ -37,10 +37,10 @@ const main = async () => {
     node_signature: bs58.encode(signature),
   };
 
-  // upload the proofs of the linktree on web3.storage
-  const path = `./Linktree/proofs.json`;
+  // upload the proofs of the contact on web3.storage
+  const path = `./Contact/proofs.json`;
 
-  if (!fs.existsSync('./Linktree')) fs.mkdirSync('./Linktree');
+  if (!fs.existsSync('./Contact')) fs.mkdirSync('./Contact');
 
   console.log('PATH', path);
 
@@ -50,7 +50,7 @@ const main = async () => {
 
     const file = await getFilesFromPath(path);
     const proof_cid = await storageClient.put(file);
-    console.log('User Linktrees proof uploaded to IPFS: ', proof_cid);
+    console.log('User contact proof uploaded to IPFS: ', proof_cid);
 
     // deleting the file from fs once it is uploaded to IPFS
     await deleteFile(path);

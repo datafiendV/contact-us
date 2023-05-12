@@ -3,12 +3,12 @@ const leveldown = require('leveldown');
 const { namespaceWrapper } = require('./namespaceWrapper');
 const fs = require('fs');
 
-// db functions for linktree
-const getLinktree = async (publicKey) => {
+// db functions for contact
+const getContact = async (publicKey) => {
   return new Promise((resolve, reject) => {
-  namespaceWrapper.levelDB.get(getLinktreeId(publicKey), (err, value) => {
+  namespaceWrapper.levelDB.get(getContactId(publicKey), (err, value) => {
     if (err) {
-      console.error("Error in getLinktree:", err);
+      console.error("Error in getContact:", err);
       resolve(null);
     } else {
       resolve(JSON.parse(value || "[]"));
@@ -17,19 +17,19 @@ const getLinktree = async (publicKey) => {
   });
 }
 
-const setLinktree = async (publicKey, linktree) => {
-   namespaceWrapper.levelDB.put(getLinktreeId(publicKey), JSON.stringify(linktree));
-   return console.log("Linktree set");
+const setContact = async (publicKey, contact) => {
+   namespaceWrapper.levelDB.put(getContactId(publicKey), JSON.stringify(contact));
+   return console.log("Contact set");
 }
 
-const getAllLinktrees = async (values) => {
+const getAllContacts = async (values) => {
   return new Promise((resolve, reject) => {
   let dataStore = [];
 
   if (!values) values = true;
   namespaceWrapper.levelDB.createReadStream({
-      lt: 'linktree~',
-      gt: `linktree`,
+      lt: 'contact~',
+      gt: `contact`,
       reverse: true,
       keys: true,
       values: values
@@ -39,7 +39,7 @@ const getAllLinktrees = async (values) => {
       dataStore.push({ key: data.key.toString(), value: JSON.parse(data.value.toString()) });
     })
     .on('error', function (err) {
-      console.log('Something went wrong in read linktreesStream!', err);
+      console.log('Something went wrong in read contactsStream!', err);
       reject(err);
     })
     .on('close', function () {
@@ -201,8 +201,8 @@ const getNodeProofCidid = (round) => {
   return `node_proofs:${round}`;
 }
 
-const getLinktreeId = (publicKey) => {
-  return `linktree:${publicKey}`;
+const getContactId = (publicKey) => {
+  return `contact:${publicKey}`;
 }
 
 const getProofsId = (pubkey) => {
@@ -214,9 +214,9 @@ const getAuthListId = (round) => {
 }
 
 module.exports = {
-  getLinktree,
-  setLinktree,
-  getAllLinktrees,
+  getContact,
+  setContact,
+  getAllContacts,
   getProofs,
   setProofs,
   getAllProofs,

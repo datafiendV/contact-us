@@ -9,7 +9,7 @@ const web3 = new Web3();
 const ethUtil = require('ethereumjs-util');
 
 module.exports = async (submission_value, round) => {
-  console.log('******/ Linktree CID VALIDATION Task FUNCTION /******');
+  console.log('******/ contact CID VALIDATION Task FUNCTION /******');
   const outputraw = await dataFromCid(submission_value);
   const output = outputraw.data;
   console.log('OUTPUT', output);
@@ -25,16 +25,16 @@ module.exports = async (submission_value, round) => {
   );
   console.log("Is the node's signature on the CID payload correct?", isNode);
 
-  // check each item in the linktrees list and verify that the node is holding that payload, and the signature matches
-  let isLinktree = await verifyLinktrees(output.proofs);
-  console.log('IS LINKTREE True?', isLinktree);
+  // check each item in the contacts list and verify that the node is holding that payload, and the signature matches
+  let isContact = await verifyContacts(output.proofs);
+  console.log('IS Contact True?', isContact);
 
-  if (isNode && isLinktree) return true; // if both are true, return true
+  if (isNode && isContact) return true; // if both are true, return true
   else return false; // if one of them is false, return false
 };
 
-// verify the linktree signature by querying the other node to get it's copy of the linktree
-async function verifyLinktrees(proofs_list_object) {
+// verify the Contact signature by querying the other node to get it's copy of the Contact
+async function verifyContacts(proofs_list_object) {
   let allSignaturesValid = true;
   let AuthUserList = await db.getAllAuthLists();
   console.log('Authenticated Users List:', AuthUserList);
@@ -50,17 +50,17 @@ async function verifyLinktrees(proofs_list_object) {
     //   "http://localhost:10000",
     // ]
 
-    // verify the signature of the linktree for each nodes
+    // verify the signature of the Contact for each nodes
     for (const nodeUrl of nodeUrlList) {
-      console.log('cheking linktree on ', nodeUrl);
+      console.log('cheking Contact on ', nodeUrl);
 
-      // get all linktree in this node
+      // get all Contact in this node
       const res = await axios.get(
-        `${url}/task/${TASK_ID}/linktree/get/${publicKey}`,
+        `${url}/task/${TASK_ID}/Contact/get/${publicKey}`,
       );
 
       // TEST hardcode the node endpoint
-      // const res = await axios.get(`${nodeUrl}/linktree/get/${publicKey}`);
+      // const res = await axios.get(`${nodeUrl}/Contact/get/${publicKey}`);
 
       // check node's status
       if (res.status != 200) {
@@ -69,15 +69,15 @@ async function verifyLinktrees(proofs_list_object) {
       }
 
       // get the payload
-      const linktree = res.data;
+      const contact = res.data;
 
       // check if the user's pubkey is on the authlist
-      if (AuthUserList.hasOwnProperty(linktree.publicKey)) {
+      if (AuthUserList.hasOwnProperty(contact.publicKey)) {
         console.log('User is on the auth list');
       } else {
         
         // Check if the public key is an ETH address
-        if (linktree.publicKey.length == 42) { 
+        if (contact.publicKey.length == 42) { 
 
           // Verify the ETH signature
           const { data, publicKey, signature } = payload;
@@ -118,10 +118,10 @@ async function verifyLinktrees(proofs_list_object) {
 
           // Verify the signature
           const messageUint8Array = new Uint8Array(
-            Buffer.from(JSON.stringify(linktree.data)),
+            Buffer.from(JSON.stringify(contact.data)),
           );
-          const signature = linktree.signature;
-          const publicKey = linktree.publicKey;
+          const signature = contact.signature;
+          const publicKey = contact.publicKey;
           const signatureUint8Array = bs58.decode(signature);
           const publicKeyUint8Array = bs58.decode(publicKey);
           const isSignatureValid = await verifySignature(
