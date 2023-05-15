@@ -6,5 +6,5 @@ To-Do
 1. Update rest APIs
 2. Update db model
 3. Add clientside encryption?
-4. Test w/ clientside
+4. Test w/ clientside  
 
