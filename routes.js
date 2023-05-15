@@ -46,7 +46,7 @@ router.use((req, res, next) => {
         if (!fs.existsSync('./contact')) fs.mkdirSync('./contact');
         fs.writeFileSync("./contact/" + `contact_${pubkey}.json`, JSON.stringify(contact));
         // fs.writeFileSync('proof.json', JSON.stringify(proof));
-        await db.setLinktree(pubkey, contact);
+        await db.setContact(pubkey, contact);
 
         const round = await namespaceWrapper.getRound();
         // TEST For only testing purposes:
@@ -69,7 +69,7 @@ router.use((req, res, next) => {
 
     // dumps all contacts (body data is encrypted so this endpoint does not require auth)
     router.get('/contact', async (req, res) => {
-        const log = "Nothing to see here, check /:publicKey to get the linktree"
+        const log = "Nothing to see here, check /:publicKey to get the contact"
         db.getAllContacts()
         return res.status(200).send(log);
     });
@@ -85,8 +85,8 @@ router.use((req, res, next) => {
 
     // returns 'proofs' aka encrypted contact us submissions to verify receipt of submissions
     router.get('/proofs/', async (req, res) => {
-    linktree = await db.getAllNodeProofCids() || '[]';
-    return res.status(200).send(linktree);
+    contactNodeProofs = await db.getAllNodeProofCids() || '[]';
+    return res.status(200).send(contactNodeProofs);
     });
 
     // returns proofs for a particular round
