@@ -1,198 +1,159 @@
-const levelup = require('levelup');
-const leveldown = require('leveldown');
 const { namespaceWrapper } = require('./namespaceWrapper');
-const fs = require('fs');
+
+namespaceWrapper.getDb().then((db) => {
+  db.ensureIndex({ fieldName: 'contactId', unique: true, sparse:true }, function (err) {
+    if (err) console.error('Index creation error:', err);
+  });
+  
+  db.ensureIndex({ fieldName: 'proofsId', unique: true, sparse:true }, function (err) {
+    if (err) console.error('Index creation error:', err);
+  });
+  
+  db.ensureIndex({ fieldName: 'NodeProofsCidId', unique: true, sparse:true }, function (err) {
+    if (err) console.error('Index creation error:', err);
+  });
+  
+  db.ensureIndex({ fieldName: 'authListId', unique: true, sparse:true }, function (err) {
+    if (err) console.error('Index creation error:', err);
+  });
+  
+});
 
 // db functions for contact
 const getContact = async (publicKey) => {
-  return new Promise((resolve, reject) => {
-  namespaceWrapper.levelDB.get(getContactId(publicKey), (err, value) => {
-    if (err) {
-      console.error("Error in getContact:", err);
-      resolve(null);
+  const contactId = getContactId(publicKey);
+  try {
+    const resp = await db.findOne({contactId });
+    if (resp) {
+      return resp.contact;
     } else {
-      resolve(JSON.parse(value || "[]"));
+      return null;
     }
-    });
-  });
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
 
 const setContact = async (publicKey, contact) => {
-   namespaceWrapper.levelDB.put(getContactId(publicKey), JSON.stringify(contact));
-   return console.log("Contact set");
+  try {
+    const contactId = getContactId(publicKey);
+    await db.insert({ contactId, contact });
+    return console.log("contact set");
+  } catch (err) {
+    return undefined;
+  }
 }
 
 const getAllContacts = async (values) => {
-  return new Promise((resolve, reject) => {
-  let dataStore = [];
-
-  if (!values) values = true;
-  namespaceWrapper.levelDB.createReadStream({
-      lt: 'contact~',
-      gt: `contact`,
-      reverse: true,
-      keys: true,
-      values: values
-  })
-  .on('data', function (data) {
-      console.log( data.key.toString(), '=', data.value.toString())
-      dataStore.push({ key: data.key.toString(), value: JSON.parse(data.value.toString()) });
-    })
-    .on('error', function (err) {
-      console.log('Something went wrong in read contactsStream!', err);
-      reject(err);
-    })
-    .on('close', function () {
-      console.log('Stream closed')
-    })
-    .on('end', function () {
-      console.log('Stream ended')
-      resolve(dataStore);
-    })
+  const contactListRaw = await db.find({
+    contact: { $exists: true },
   });
+  let contactList = contactListRaw.map(contactList =>
+    contactList.contact
+  );
+  return contactList;
 }
 
 // namespaceWrapper.levelDB functions for proofs
 const getProofs = async (pubkey) => {
-  return new Promise((resolve, reject) => {
-    namespaceWrapper.levelDB.get(getProofsId(pubkey), (err, value) => {
-      if (err) {
-        console.error("Error in getProofs:", err);
-        resolve(null);
-      } else {
-        resolve(JSON.parse(value || "[]"));
-      }
-      });
-    });
+  const proofsId = getProofsId(pubkey);
+  try {
+    const resp = await db.findOne({proofsId });
+    if (resp) {
+      return resp.proofs;
+    } else {
+      return null;
+    }
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
 
 const setProofs = async (pubkey, proofs) => {
-    namespaceWrapper.levelDB.put(getProofsId(pubkey), JSON.stringify(proofs));
+  try {
+    const proofsId = getProofsId(pubkey);
+    await db.insert({ proofsId, proofs });
     return console.log("Proofs set");
+  } catch (err) {
+    return undefined;
+  }
 }
 
 const getAllProofs = async () => {
-  return new Promise((resolve, reject) => {
-    let dataStore = [];
-    namespaceWrapper.levelDB.createReadStream({
-      gte: 'proofs',
-      reverse: true,
-      keys: true,
-      values: true
-    })
-      .on('data', function (data) {
-        console.log( data.key.toString(), '=', data.value.toString())
-        dataStore.push( JSON.parse(data.value.toString()));
-      })
-      .on('error', function (err) {
-        console.log('Something went wrong in read proofsStream!', err);
-        reject(err);
-      })
-      .on('close', function () {
-        console.log('Stream closed')
-      })
-      .on('end', function () {
-        console.log('Stream ended')
-        resolve(dataStore);
-      })
-    });
+  const proofsListRaw = await db.find({
+    proofs: { $exists: true },
+  });
+  let proofsList = proofsListRaw.map(proofsList =>
+    proofsList.proofs
+  );
+  return proofsList;
 }
 
 // db functions for node proofs
 const getNodeProofCid = async (round) => {
-  return new Promise((resolve, reject) => {
-    namespaceWrapper.levelDB.get(getNodeProofCidid(round), (err, value) => {
-      if (err) {
-        console.error("Error in getNodeProofCid:", err);
-        resolve(null);
-      } else {
-        resolve(value.toString() || "[]");
-      }
-      });
-    });
+  const NodeproofsListRaw = await db.find({
+    cid: { $exists: true },
+  });
+  let NodeproofsList = NodeproofsListRaw.map(NodeproofsList =>
+    NodeproofsList.cid
+  );
+  return NodeproofsList;
 }
 
 const setNodeProofCid = async (round, cid) => {
-    namespaceWrapper.levelDB.put(getNodeProofCidid(round), cid);
+  try {
+    const NodeProofsCidId = getNodeProofCidid(round);
+    await db.insert({ NodeProofsCidId, cid });
     return console.log("Node CID set");
+  } catch (err) {
+    return undefined;
+  }
 }
 
 const getAllNodeProofCids = async () => {
-  return new Promise((resolve, reject) => {
-    let dataStore = [];
-    const nodeProofsStream = namespaceWrapper.levelDB.createReadStream({
-      gt: 'node_proofs:',
-      lt: 'node_proofs~',
-      reverse: true,
-      keys: true,
-      values: true
-  })
-    nodeProofsStream
-      .on('data', function (data) {
-        console.log( data.key.toString(), '=', data.value.toString())
-        dataStore.push({ key: data.key.toString(), value: data.value.toString() });
-      })
-      .on('error', function (err) {
-        console.log('Something went wrong in read nodeProofsStream!', err);
-        reject(err);
-      })
-      .on('close', function () {
-        console.log('Stream closed')
-      })
-      .on('end', function () {
-        console.log('Stream ended')
-        resolve(dataStore);
-      })
-    });
+  const NodeproofsListRaw = await db.find({
+    cid: { $exists: true },
+  });
+  let NodeproofsList = NodeproofsListRaw.map(NodeproofsList =>
+    NodeproofsList.cid
+  );
+  return NodeproofsList;
 }
 
 //db functions fro Auth list
 const getAuthList = async (pubkey) => {
-  return new Promise((resolve, reject) => {
-    namespaceWrapper.levelDB.get(getAuthListId(pubkey), (err, value) => {
-      if (err) {
-        console.error("Error in getAuthList:", err);
-        resolve(null);
-      } else {
-        resolve(JSON.parse(value || "[]"));
-      }
-      });
-    });
+  const authListId = getauthListid(pubkey);
+  try {
+    const resp = await db.findOne({authListId });
+    if (resp) {
+      return resp.authList;
+    }
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
 }
 
 const setAuthList = async (pubkey) => {
-    namespaceWrapper.levelDB.put(getAuthListId(pubkey), JSON.stringify(pubkey));
-    return console.log("Auth List set ", pubkey);
+  try {
+    const authListId = getauthListid(pubkey);
+    await db.insert({ authListId, cid });
+    return console.log("auth List CID set");
+  } catch (err) {
+    return undefined;
+  }
 }
 
 const getAllAuthLists = async (values) => {
-  if (!values) values = true;
-  return new Promise((resolve, reject) => {
-    let dataStore = [];
-    const authListStream = namespaceWrapper.levelDB.createReadStream({
-      gt: 'auth_list:',
-      lt: 'auth_list~',
-      reverse: true,
-      keys: true,
-      values: values
-  })
-    authListStream
-      .on('data', function (data) {
-        console.log( data.key.toString(), '=', data.value.toString())
-        dataStore.push( JSON.parse(data.value.toString()) );
-      })
-      .on('error', function (err) {
-        console.log('Something went wrong in read authListStream!', err);
-        reject(err);
-      })
-      .on('close', function () {
-        console.log('Stream closed')
-      })
-      .on('end', function () {
-        console.log('Stream ended')
-        resolve(dataStore);
-      })
-    });
+  const authListRaw = await db.find({
+    authList: { $exists: true },
+  });
+  let authList = authListRaw.map(authList =>
+    authList.authList
+  );
+  return authList;
 }
 
 
