@@ -30,6 +30,7 @@ class NamespaceWrapper {
     }catch(e){
       this.#db = Datastore.create(`../namespace/${TASK_ID}/KOIILevelDB.db`);
     }
+
     return this.#db
   }
   /**

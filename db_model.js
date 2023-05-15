@@ -38,7 +38,9 @@ const getContact = async (publicKey) => {
 const setContact = async (publicKey, contact) => {
   try {
     const contactId = getContactId(publicKey);
+    console.log("Set contact", {contactId, contact})
     await db.insert({ contactId, contact });
+    console.log("Contact set");
     return console.log("contact set");
   } catch (err) {
     return undefined;

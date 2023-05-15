@@ -1,6 +1,6 @@
 const { namespaceWrapper } = require('./namespaceWrapper');
-const linktree_task = require('./linktree_task');
-const linktree_validate = require('./linktree_validate');
+const contact_task = require('./contact_task');
+const contact_validate = require('./contact_validate');
 const crypto = require('crypto');
 const dataFromCid = require("./helpers/dataFromCid");
 const db = require('./db_model');
@@ -8,10 +8,10 @@ const db = require('./db_model');
 class CoreLogic {
   async task() {
     
-    // run linktree task
+    // run contact task
     console.log('*********task() started*********');
 
-    const proof_cid = await linktree_task();
+    const proof_cid = await contact_task();
 
     const round = await namespaceWrapper.getRound();
 
@@ -41,7 +41,7 @@ class CoreLogic {
     const round = await namespaceWrapper.getRound();
     
     const proof_cid = await db.getNodeProofCid(round - 1); // retrieves the cid
-    console.log('Linktree proofs CID', proof_cid, "in round", round - 1);
+    console.log('contact proofs CID', proof_cid, "in round", round - 1);
 
     return proof_cid;
   }
@@ -174,8 +174,8 @@ class CoreLogic {
   async validateNode(submission_value, round) {
     console.log('Received submission_value', submission_value, round);
 
-    // import the linktree validate module
-    const vote = await linktree_validate(submission_value, round);
+    // import the contact validate module
+    const vote = await contact_validate(submission_value, round);
     console.log('Vote', vote);
     return vote;
   }

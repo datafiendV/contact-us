@@ -1,54 +1,22 @@
-const dbmodel = require('../db_model');
-
-const PublicKey = "test-pubkey1"
+const {namespaceWrapper} = require('../namespaceWrapper');
+let db = require('../db_model');
 
 async function testdb() {
-const round = 1000;
-const pubkey = PublicKey;
+  const round = 1000;
+  const pubkey = "test-pubkey3";
+  db = await namespaceWrapper.getDb();
+  console.log("DB", db)
 
-    // get linktree
-    // let linktree = await dbmodel.getLinktree(PublicKey);
-    // console.log(linktree);
+    // TEST create contact db
+    try {
+        const contactId = pubkey;
+        const contact = 'test-contact2';
+        console.log("Set contact", {contactId, contact})
+        await db.insert({ contactId, contact });
+        return console.log("contact set");
+      } catch (err) {
+        return undefined;
+      }
+}
 
-    // get all linktrees
-    // await dbmodel.getAllLinktrees();
-
-    // set linktree
-    // let linktree2 = {
-    //     "name": "test1",
-    //     "description": "test1",
-    //     "avatar": "test1",
-    //     "links": [
-    //         {
-    //             "name": "test1",
-    //             "url": "test1"
-    //         }
-    //     ]
-    // }
-    // await dbmodel.setLinktree(PublicKey, linktree2);
-
-    // set node proofs
-    // let cid = "testcid"
-    // await dbmodel.setNodeProofCid(round, cid);  
-
-    // get node proofs
-    // let nodeProofs = await dbmodel.getNodeProofCid(round);
-    // console.log(nodeProofs);
-
-    // set proofs
-    // let proofs = {
-    //   publicKey: "test-pubkey1",
-    //   signature: "test-signature1",
-    // }
-    // await dbmodel.setProofs(pubkey, proofs);
-
-    // get proofs
-    // let proofs = await dbmodel.getProofs(round);
-    // console.log(proofs);
-
-    // get all proofs
-    // await dbmodel.getAllProofs();
-
-}                  
-
-testdb()
+testdb();

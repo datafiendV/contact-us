@@ -3,7 +3,6 @@ const router = express.Router();
 const db = require('./db_model');
 const fs = require('fs');
 const sha256 = require('sha256');
-const { createHash } = require('crypto');
 
 const { namespaceWrapper } = require('./namespaceWrapper');
 
