@@ -8,6 +8,10 @@ class NamespaceWrapper {
   #db;
 
   constructor() {
+    this.initDB();
+  }
+
+  async initDB() {
     if(taskNodeAdministered){
       this.getTaskLevelDBPath().then((path)=>{
         this.#db = Datastore.create(path);
@@ -19,19 +23,39 @@ class NamespaceWrapper {
       this.#db = Datastore.create('./localKOIIDB.db');
       console.log("DB Initialized")
     }
+
+    this.ensureIndex();
   }
 
-  async getDb(){
+  ensureIndex() {
+    this.#db.ensureIndex(
+      { fieldName: 'contactId', unique: true, sparse: true },
+      function (err) {
+        if (err) console.error('Index creation error:', err);
+      },
+    );
+    this.#db.ensureIndex(
+      { fieldName: 'proofsId', unique: true, sparse: true },
+      function (err) {
+        if (err) console.error('Index creation error:', err);
+      },
+    );
+    this.#db.ensureIndex(
+      { fieldName: 'NodeProofsCidId', unique: true, sparse: true },
+      function (err) {
+        if (err) console.error('Index creation error:', err);
+      },
+    );
+    this.#db.ensureIndex(
+      { fieldName: 'authListId', unique: true, sparse: true },
+      function (err) {
+        if (err) console.error('Index creation error:', err);
+      },
+    );
+  }
 
-    if(this.#db)return this.#db
-    try{
-      const path = await this.getTaskLevelDBPath()
-      this.#db = Datastore.create(path);
-    }catch(e){
-      this.#db = Datastore.create(`../namespace/${TASK_ID}/KOIILevelDB.db`);
-    }
-
-    return this.#db
+  getDb() {
+    return this.#db;
   }
   /**
    * Namespace wrapper of storeGetAsync

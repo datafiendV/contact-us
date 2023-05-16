@@ -1,6 +1,6 @@
 const {default: axios} = require('axios');
 
-// This test submits linktrees from differnet publicKey to the service and stored in localdb
+// This test submits contacts from differnet publicKey to the service and stored in localdb
 async function main() {
 try {
   const pubkey = "testpubkeyregisterpubkey";

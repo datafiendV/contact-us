@@ -12,7 +12,7 @@ const db = require('./db_model');
 const { Keypair } = require('@solana/web3.js'); // TEST For local testing
 
 const main = async () => {
-  console.log('******/  IN Linktree Task FUNCTION /******');
+  console.log('******/  IN contact Task FUNCTION /******');
 
   // Load node's keypair from the JSON file
   const keypair = await namespaceWrapper.getSubmitterAccount();
@@ -20,10 +20,10 @@ const main = async () => {
   // TEST For local testing, hardcode the keypair
   // const keypair = Keypair.generate(); 
 
-  // Get linktree list fron localdb
+  // Get contact list fron localdb
   const proofs_list_object =  await db.getAllProofs();
 
-  // Use the node's keypair to sign the linktree list
+  // Use the node's keypair to sign the contact list
   const messageUint8Array = new Uint8Array(
     Buffer.from(JSON.stringify(proofs_list_object)),
   );
