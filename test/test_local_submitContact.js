@@ -6,7 +6,7 @@ const fs = require("fs")
 const solanaWeb3 = require('@solana/web3.js');
 const crypto = require('crypto');
 
-// This test submits linktrees from differnet publicKey to the service and stored in localdb
+// This test submits contacts from differnet publicKey to the service and stored in localdb
 async function main() {
 try {
   const keyPair = nacl.sign.keyPair();
@@ -18,7 +18,7 @@ try {
   console.log('publicKey', bs58.encode(publicKey));
   const data = {
     uuid: uuidv4(),
-    linktree: [
+    contact: [
       {
         key: 'official',
         label: 'Official Website',

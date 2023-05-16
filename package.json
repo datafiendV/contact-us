@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:submit": "node test/test_node_submitLinktree.js",
-    "test:submitlocal": "node test/test_local_submitLinktree.js",
+    "test:submit": "node test/test_node_submitContact.js",
+    "test:submitlocal": "node test/test_local_submitContact.js",
     "test:db": "node test/test_dbmodel.js",
     "test": "node test/unitTest.js",
     "test:status": "node test/check_task-status.js",

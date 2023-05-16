@@ -17,7 +17,7 @@ const eth_address = wallet.getAddressString();
 // Define your message
 const data = {
     uuid: uuidv4(),
-    linktree:
+    contact:
     {
     name: 'Abdul Anwar',
     description: "Loves a good crypto meme or two",
@@ -74,7 +74,7 @@ const payload = {
 console.log(payload);
 
 await axios
-    .post('https://k2-tasknet-ports-3.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/linktree', {payload})
+    .post('https://k2-tasknet-ports-3.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/contact', {payload})
     .then((e) => {
       if (e.status != 200) {
         console.log(e);

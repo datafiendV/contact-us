@@ -6,7 +6,7 @@ const fs = require("fs")
 const solanaWeb3 = require('@solana/web3.js');
 const crypto = require('crypto');
 
-// This test submits linktrees from differnet publicKey to the service and stored in localdb
+// This test submits contacts from differnet publicKey to the service and stored in localdb
 async function main() {
 try {
   const keyPair = nacl.sign.keyPair();
@@ -15,7 +15,7 @@ try {
 
   const data = {
       uuid: uuidv4(),
-      linktree: [
+      contact: [
         {
           key: 'official',
           label: 'Official Website',
@@ -52,7 +52,7 @@ try {
   // console.log(payload);
   
   await axios
-    .post('https://k2-tasknet-ports-2.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/linktree', {payload})
+    .post('https://k2-tasknet-ports-2.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/contact', {payload})
     .then((e) => {
       if (e.status != 200) {
         console.log(e);
@@ -63,7 +63,7 @@ try {
       console.error(e);
     });
     await axios
-    .post('https://k2-tasknet-ports-1.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/linktree', {payload})
+    .post('https://k2-tasknet-ports-1.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/contact', {payload})
     .then((e) => {
       if (e.status != 200) {
         console.log(e);
@@ -74,7 +74,7 @@ try {
       console.error(e);
     });
     await axios
-    .post('https://k2-tasknet.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/linktree', {payload})
+    .post('https://k2-tasknet.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/contact', {payload})
     .then((e) => {
       if (e.status != 200) {
         console.log(e);
@@ -85,7 +85,7 @@ try {
       console.error(e);
     });
     await axios
-    .post('https://k2-tasknet-ports-3.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/linktree', {payload})
+    .post('https://k2-tasknet-ports-3.koii.live/task/HjWJmb2gcwwm99VhyNVJZir3ToAJTfUB4j7buWnMMUEP/contact', {payload})
     .then((e) => {
       if (e.status != 200) {
         console.log(e);

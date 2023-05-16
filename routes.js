@@ -69,7 +69,7 @@ router.use((req, res, next) => {
     // dumps all contacts (body data is encrypted so this endpoint does not require auth)
     router.get('/contact', async (req, res) => {
         const log = "Nothing to see here, check /:publicKey to get the contact"
-        db.getAllContacts()
+        // db.getAllContacts()
         return res.status(200).send(log);
     });
 

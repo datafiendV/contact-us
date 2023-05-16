@@ -6,7 +6,7 @@ const bs58 = require('bs58');
 let submission_value = "bafybeig5322lknop4u6m4p26jd4bcp7rdbwkuqy3ifeytqrmo2ogia5kwe"
 let round = 1000
 async function test_cidValidation(submission_value) {
-  console.log('******/  TEST Linktree CID VALIDATION Task FUNCTION /******');
+  console.log('******/  TEST contact CID VALIDATION Task FUNCTION /******');
   const outputraw = await dataFromCid(submission_value);
   const output = outputraw.data;
 
@@ -21,22 +21,22 @@ async function test_cidValidation(submission_value) {
   console.log('IS NODE True?', isNode);
 
   const AuthUserList = [];
-  let isLinktree = await verifyLinktree(proofs_list_object, AuthUserList);
+  let iscontact = await verifycontact(proofs_list_object, AuthUserList);
   console.log('Authenticated Users List:', AuthUserList);
-  console.log('IS LINKTREE True?', isLinktree);
+  console.log('IS contact True?', iscontact);
 
-  if (isNode && isLinktree) return true; // if both are true, return true
+  if (isNode && iscontact) return true; // if both are true, return true
   else return false; // if one of them is false, return false
 }
 
-async function verifyLinktree(proofs_list_object, AuthUserList) {
+async function verifycontact(proofs_list_object, AuthUserList) {
   let allSignaturesValid = true;
   for (const proofs of proofs_list_object) {
     console.log('proofs.value.publicKey', proofs.value[0].publicKey);
-    const linktree_object = await db.getLinktree(proofs.value[0].publicKey);
-    console.log('LINKTREE OBJECT', linktree_object);
+    const contact_object = await db.getcontact(proofs.value[0].publicKey);
+    console.log('contact OBJECT', contact_object);
     const messageUint8Array = new Uint8Array(
-      Buffer.from(JSON.stringify(linktree_object.data)),
+      Buffer.from(JSON.stringify(contact_object.data)),
     );
     const signature = proofs.value[0].signature;
     console.log('SIGNATURE', signature);
@@ -45,7 +45,7 @@ async function verifyLinktree(proofs_list_object, AuthUserList) {
     const signatureUint8Array = bs58.decode(signature);
     const publicKeyUint8Array = bs58.decode(publicKey);
 
-    // verify the linktree signature
+    // verify the contact signature
     const isSignatureValid = await verifySignature(
       messageUint8Array,
       signatureUint8Array,

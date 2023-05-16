@@ -43,7 +43,7 @@ function verifySignature(payload) {
   }
 const data = {
     uuid: "235e8e0e-5689-488a-98aa-930a4594d15c",
-    linktree: [
+    contact: [
       {
         key: 'official',
         label: 'Official Website',
