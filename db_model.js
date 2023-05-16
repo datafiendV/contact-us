@@ -1,6 +1,6 @@
 const { namespaceWrapper } = require('./namespaceWrapper');
 
-const db = namespaceWrapper.getDb();
+const db = namespaceWrapper.initDB();
 
 // db functions for contact
 const getContact = async publicKey => {

@@ -1,8 +1,8 @@
 #Provide the taskId if you are updating the task
 task_id: ''
 # Name and desciption of your task
-task_name: 'linktree-task'
-task_description: 'linktree task'
+task_name: 'contact-task'
+task_description: 'contact task'
 
 # network value can be DEVELOPMENT , ARWEAVE or IPFS
 task_executable_network: 'DEVELOPMENT'
@@ -42,16 +42,13 @@ space: 3
 # To add more global variables and task variables, please refer the type,value,description format shown below
 
 author: 'Soma'
-description: 'linktree-task'
-repositoryUrl: 'https://github.com/somali0128/task-template-linktree'
+description: 'contact-task'
+repositoryUrl: 'https://github.com/datafiendV/contact-us'
 imageUrl: 'https://www.koii.network/images/iceberg_desktop.svg'
 requirementsTags:
-  - type: GLOBAL_VARIABLE
-    value: 'WEB3.STORAGE SECRET KEY'
-    description: 'used to connect web3.storage'
   - type: TASK_VARIABLE
-    value: 'SCAPING URL'
-    description: 'url from which you want to scrape'
+    value: 'SECRET_WEB3_STORAGE_KEY'
+    description: 'used to connect web3.storage'
   - type: CPU
     value: '4-core'
   - type: RAM

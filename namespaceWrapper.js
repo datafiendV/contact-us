@@ -8,10 +8,7 @@ class NamespaceWrapper {
   #db;
 
   constructor() {
-    this.initDB();
-  }
-
-  async initDB() {
+    // this.initDB();
     if(taskNodeAdministered){
       this.getTaskLevelDBPath().then((path)=>{
         this.#db = Datastore.create(path);
@@ -23,8 +20,20 @@ class NamespaceWrapper {
       this.#db = Datastore.create('./localKOIIDB.db');
       console.log("DB Initialized")
     }
-
     this.ensureIndex();
+  }
+
+  async initDB() {
+    if(this.#db)return this.#db
+    try{
+      const path = await this.getTaskLevelDBPath()
+      this.#db = Datastore.create(path);
+    }catch(e){
+      this.#db = Datastore.create(`../namespace/${TASK_ID}/KOIILevelDB.db`);
+    }
+    this.ensureIndex();
+    return this.#db
+ 
   }
 
   ensureIndex() {
@@ -54,9 +63,6 @@ class NamespaceWrapper {
     );
   }
 
-  getDb() {
-    return this.#db;
-  }
   /**
    * Namespace wrapper of storeGetAsync
    * @param {string} key // Path to get
